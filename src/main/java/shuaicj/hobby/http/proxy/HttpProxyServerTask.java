@@ -33,10 +33,10 @@ public class HttpProxyServerTask implements Runnable {
 
             HttpProxyClientHeader header = HttpProxyClientHeader.parseFrom(clientInput);
 
-            try (final Socket targetSocket = new Socket(header.getHost(), header.getPort())) {
+            try (final Socket remoteSocket = new Socket(header.getHost(), header.getPort())) {
 
-                final OutputStream targetOutput = targetSocket.getOutputStream();
-                final InputStream targetInput = targetSocket.getInputStream();
+                final OutputStream remoteOutput = remoteSocket.getOutputStream();
+                final InputStream remoteInput = remoteSocket.getInputStream();
 
                 logger.info(id + " {}", header);
 
@@ -44,11 +44,11 @@ public class HttpProxyServerTask implements Runnable {
                     clientOutput.write("HTTP/1.1 200 Connection Established\r\n\r\n".getBytes());
                     clientOutput.flush();
                 } else { // if http, forward header
-                    targetOutput.write(header.getBytes());
+                    remoteOutput.write(header.getBytes());
                 }
 
-                Future<?> future = pool.submit(() -> pipe(clientInput, targetOutput));
-                pipe(targetInput, clientOutput);
+                Future<?> future = pool.submit(() -> pipe(clientInput, remoteOutput));
+                pipe(remoteInput, clientOutput);
                 future.get();
             }
         } catch (IOException | InterruptedException | ExecutionException e) {

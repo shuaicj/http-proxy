@@ -30,9 +30,9 @@ public class HttpProxyClientHeader {
     }
 
     public static HttpProxyClientHeader parseFrom(InputStream in) throws IOException {
-        HttpProxyClientHeader target = new HttpProxyClientHeader(in);
-        target.init();
-        return target;
+        HttpProxyClientHeader header = new HttpProxyClientHeader(in);
+        header.init();
+        return header;
     }
 
     private void init() throws IOException {
