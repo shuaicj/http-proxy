@@ -63,8 +63,6 @@ public class HttpProxyServerTask implements Runnable {
                 out.write(buf, 0, len);
             }
             out.flush();
-        } catch (IOException e) {
-            logger.error(id + " shit happens", e);
-        }
+        } catch (IOException ignored) {}
     }
 }
